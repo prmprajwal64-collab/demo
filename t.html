@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sky Drop Fuels | CO₂ to Gasoline</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- EMAILJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Segoe UI,Arial;
+  background:radial-gradient(circle at top,#0f172a,#020617);
+  color:#e5e7eb;
+  overflow-x:hidden;
+}
+header{
+  padding:30px;
+  text-align:center;
+  background:linear-gradient(135deg,#0ea5e9,#1e3a8a);
+}
+header h1{margin:0;letter-spacing:2px}
+section{
+  max-width:1100px;
+  margin:auto;
+  padding:40px 20px;
+}
+.card{
+  background:linear-gradient(145deg,#020617,#0b1225);
+  border-radius:20px;
+  padding:30px;
+  margin-bottom:30px;
+  box-shadow:0 40px 100px rgba(14,165,233,.25);
+  animation:fadeUp 1s ease forwards;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(40px)}
+  to{opacity:1;transform:none}
+}
+h2{color:#38bdf8;margin-top:0}
+input,button{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:none;
+  border-radius:12px;
+  font-size:15px;
+}
+input{background:#0f172a;color:#fff}
+button{
+  background:#22c55e;
+  color:#020617;
+  font-weight:700;
+  cursor:pointer;
+  transition:.3s;
+}
+button:hover{background:#16a34a;transform:scale(1.02)}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+th,td{
+  padding:12px;
+  border-bottom:1px solid #1e293b;
+  text-align:left;
+}
+th{color:#38bdf8}
+.sky{
+  position:relative;
+  height:120px;
+  overflow:hidden;
+  margin-top:20px;
+}
+.package{
+  position:absolute;
+  left:-120px;
+  top:30px;
+  width:90px;
+  animation:fly 5s linear infinite;
+}
+@keyframes fly{
+  from{transform:translateX(0)}
+  to{transform:translateX(1200px)}
+}
+footer{
+  text-align:center;
+  color:#64748b;
+  padding:30px;
+  font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>SKY DROP FUELS</h1>
+  <p>Converting CO₂ into Sustainable Gasoline</p>
+</header>
+
+<section>
+
+<!-- DASHBOARD -->
+<div class="card">
+  <h2>User Dashboard</h2>
+  <p><strong>User ID:</strong> <span id="userId"></span></p>
+</div>
+
+<!-- ORDER -->
+<div class="card">
+  <h2>Place Your Order</h2>
+  <p>Price: <strong>₹80 / Liter</strong></p>
+  <input type="number" id="liters" placeholder="Enter liters required">
+  <button onclick="placeOrder()">Place Order</button>
+
+  <div class="sky">
+    <img class="package" src="https://cdn-icons-png.flaticon.com/512/679/679821.png">
+  </div>
+</div>
+
+<!-- INVOICE -->
+<div class="card">
+  <h2>Invoice Statement</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Order ID</th>
+        <th>Liters</th>
+        <th>Rate</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="invoiceBody"></tbody>
+  </table>
+</div>
+
+<!-- CONTACT -->
+<div class="card">
+  <h2>Contact</h2>
+  <p>Email: info@skydropfuels.com</p>
+  <p>Luxury Clean Energy · Net-Zero Fuel</p>
+</div>
+
+</section>
+
+<footer>
+  © 2026 Sky Drop Fuels · Carbon to Energy Revolution
+</footer>
+
+<script>
+/* ================= EMAILJS INIT ================= */
+emailjs.init("OjRDhfFVlsjEENSWo"); // 
+
+/* ================= USER ID ================= */
+function genUserId(){
+  return "USER-" + Math.random().toString(36).substring(2,10).toUpperCase();
+}
+const uid = localStorage.getItem("userId") || genUserId();
+localStorage.setItem("userId",uid);
+document.getElementById("userId").innerText = uid;
+
+/* ================= ORDER ================= */
+function placeOrder(){
+  const liters = Number(document.getElementById("liters").value);
+  if(!liters || liters<=0){alert("Enter valid liters");return;}
+
+  const price = 80;
+  const total = liters * price;
+  const orderId = "SDF-" + Date.now();
+
+  const order = {orderId,liters,price,total};
+  localStorage.setItem("latestOrder",JSON.stringify(order));
+
+  document.getElementById("invoiceBody").innerHTML = `
+    <tr>
+      <td>${orderId}</td>
+      <td>${liters}</td>
+      <td>₹80</td>
+      <td>₹${total}</td>
+    </tr>
+  `;
+
+  /* EMAIL SEND */
+  emailjs.send(
+    "service_l2g5eyg",        
+    "template_0p3thub",       
+    {
+      to_email: "prmprajwal64@gmail.com",
+      user_id: uid,
+      order_id: orderId,
+      liters: liters,
+      total: total
+    }
+  );
+
+  setTimeout(()=>{window.location="confirm.html"},80000);
+}
+</script>
+
+</body>
+</html>
